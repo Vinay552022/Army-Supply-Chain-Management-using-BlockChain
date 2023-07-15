@@ -1,38 +1,93 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.nav-link{
   color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.navbar{
+  background-color: rgba(135, 226, 238, 0.986);
+}
+.card{
+  background-color: #e3f2fd;
+}
+.thead{
+  background-color: rgba(135, 226, 238, 0.986);
+}
+.navbar-brand{
+  font-size: 1.8rem;
+}
+#warning{
+  color:red;
+}
+.btns{
+  background-color:white;
+  color: green;
+}
+button {
+  border-radius: 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+button:focus {
+  outline: 1px dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
+input,
+button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+}
+
+button,
+input {
+  overflow: visible;
+}
+
+button {
+  text-transform: none;
+}
+label h2{
+  color: blue;
+}
+.btn{
+  margin: 3px;
+}
+b{
+  color: blue;
+  margin-bottom: 2px;
+}
+button,
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button;
+}
+.form-label,.form-check-label{
+  color: #e3f2fd;
+}
+
+button::-moz-focus-inner,
+[type='button']::-moz-focus-inner,
+[type='reset']::-moz-focus-inner,
+[type='submit']::-moz-focus-inner {
+  padding: 0;
+  border-style: none;
+}
+
+.offcanvas-body{
+  background: -webkit-linear-gradient(left, #0072ff, #00c6ff);
+}
+.overflow-scroll::-webkit-scrollbar {
+  display: none;
+}
+.footer2{
+  position:fixed;
+  bottom: 0;
+}
+.h11{
+  color:rgb(12, 12, 12);
+}
+.h12{
+  color:rgb(239, 163, 11);
+}
+.h13{
+  color:rgb(237, 9, 237);
 }

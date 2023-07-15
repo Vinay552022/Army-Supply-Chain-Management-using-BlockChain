@@ -1,0 +1,149 @@
+import React, { useEffect, useState } from 'react'
+import { useContext } from 'react';
+import { SolidityContext } from '../../App';
+import { Table } from '../Table';
+import Web3 from 'web3';
+import {TableDDSTtoADSTaccepted} from "../TableDDSTtoADSTaccepted"
+
+function FromDdstAccepted({searchQuery}) {
+    let contextUser=useContext(SolidityContext)
+    let [Items,setItems]=useState([])
+    let [Quantities,setQuantities]=useState([])
+    let [Ids,setIds]=useState([])
+    let [Status,setStatus]=useState([])
+    let [Timestamps,setTimestamps]=useState([])
+    let [MailId,setMailId]=useState("")
+    let [filterItems,setFilterItems]=useState([])
+    let [filterQuantities,setFilterQuantities]=useState([])
+    let [filterIds,setFilterIds]=useState([])
+    let [filterStatus,setFilterStatus]=useState([])
+    let [filterTimestamps,setFilterTimestamps]=useState([])
+    let [mailIds,setMailIds]=useState([])
+    let [filterMailIds,setFilterMailIds]=useState([])
+    let [DDSTMail,setDDSTMail]=useState();
+    useEffect(()=>{
+        
+        
+        const getPending=async ()=>{
+            let contract=contextUser.contract;
+            console.log(contract,"000")
+            
+            let AdstMail=JSON.parse(localStorage.getItem("Mail"));
+            setMailId(AdstMail)
+   
+            if(contract!=[]){
+            try{
+                 let {0:DDSTmail,1:myRequestIds}= await contract.methods.myDDST(AdstMail[0]).call();
+                 setDDSTMail(DDSTmail)
+                 let requestIdsFromDDST=await contract.methods.AcceptedbyRequest(AdstMail[0]).call();
+                 let ids=[],timestamps=[],Items=[],mailIds=[],quantities=[],statuses=[];
+                 for(let i=0;i<requestIdsFromDDST.length;i++){
+                    if(!myRequestIds.includes(requestIdsFromDDST[i])){
+                        let {0:items,1:quantity,2:status,3:email,4:timestamp}=await contract.methods.getDetailsById(parseInt(requestIdsFromDDST[i])).call();
+                        ids.push(requestIdsFromDDST[i])
+                        Items.push(items)
+                        mailIds.push(email)
+                        timestamps.push(timestamp)
+                        quantities.push(quantity)
+                        statuses.push(status)
+                    }
+                    
+                 }
+
+                 console.log(ids,Items,mailIds,timestamps,quantities)
+                 ids=ids.map((data,index)=>parseInt(data))
+                 timestamps=timestamps.map((data,index)=>parseInt(data))
+                 setTimestamps(timestamps.reverse())
+                 setIds(ids.reverse());
+                 let i=[...Items]
+                 let j=[...quantities]
+                 let k=[...statuses]
+                 setMailIds(mailIds.reverse())
+                 setItems(i.reverse())
+                 setQuantities(j.reverse());
+                 setStatus(k.reverse())
+                 setFilterIds(ids)
+                setFilterItems(i)
+                setFilterQuantities(j)
+                setFilterStatus(k)
+                setFilterTimestamps(timestamps)
+                setFilterMailIds(mailIds)
+                
+            }
+            catch(e){
+                console.log(e)
+            }
+           
+        }
+       
+    }
+
+        getPending();
+        
+        
+    
+    },[contextUser.contract])
+   useEffect(()=>{
+    console.log(searchQuery,'visited visited')
+        setFilterItems(()=>{
+           return Items.filter((data,index)=>{
+            console.log(data,"dataaa",typeof(data))
+                return data.toLowerCase().includes(searchQuery.toLowerCase())
+            })
+        })
+        setFilterTimestamps(()=>{
+            return Timestamps.filter((data,index)=>{
+                 return ((new Date(data*1000)).toLocaleDateString()).includes(searchQuery.toLowerCase())
+            })
+            
+        })
+        setFilterIds(()=>{
+            return Ids.filter((data,index)=>{
+                 return String(data).toLowerCase().includes(searchQuery.toLowerCase())
+             })
+         })
+         setFilterStatus(()=>{
+            return Status.filter((data,index)=>{
+                 return String(data).toLowerCase().includes(searchQuery.toLowerCase())
+             })
+         })
+         setFilterQuantities(()=>{
+            return Quantities.filter((data,index)=>{
+                 return String(data).toLowerCase().includes(searchQuery.toLowerCase())
+             })
+         })
+         setFilterMailIds(()=>{
+            return mailIds.filter((data,index)=>{
+                
+                 return (data).toLowerCase().includes(searchQuery.toLowerCase())
+             })
+         })
+
+   },[searchQuery])
+   
+  return (
+    <>  
+        <div className='text-center'>
+       <h2 className="mt-5" >{DDSTMail} Accepted Requests</h2>
+       </div>
+       {console.log(filterMailIds,filterIds,filterQuantities,filterItems,"filter")}
+        {
+            
+            Items.length>0 && Items.map((data,index)=>{
+                if(filterItems.includes(data) || filterQuantities.includes(Quantities[index]) || filterIds.includes(Ids[index]) || filterStatus.includes(Status[index]) || filterTimestamps.includes(Timestamps[index]) || filterMailIds.includes(mailIds[index])) {
+            return(
+                <>   
+                <TableDDSTtoADSTaccepted Items={data} Quantities={Quantities[index]} Status={Status[index]} Ids={Ids[index]} ddstMail={DDSTMail} mailid={MailId} Timestamps={Timestamps[index]} mailIds={mailIds[index]}  />
+                </>
+            
+            )
+            }
+        })
+    }
+
+    </>
+  )
+}
+
+
+export default FromDdstAccepted
